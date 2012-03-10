@@ -8,7 +8,7 @@ import logging
 import re
 import sys
 
-from tempita import Template, bunch
+from tempita import HTMLTemplate, Template, bunch
 
 ######################################################################
 #
@@ -111,6 +111,10 @@ def main(argv=None):
                                  action="store_const", const=logging.WARNING,
                                  dest="output_level",
                                  help="run quietly")
+    parser.add_argument("-H", "--html",
+                        action='store_const', dest='template_class',
+                        const=HTMLTemplate, default=Template,
+                        help="Do HTML escaping")
     parser.add_argument("-t", "--template", required=True,
                         help="template file", metavar="FILE")
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
@@ -122,7 +126,7 @@ def main(argv=None):
     output.info("Reading template from {}".format(args.template))
     with open(args.template) as f:
         template_string = "".join(f.readlines())
-    template = Template(template_string)
+    template = args.template_class(template_string)
 
     output.info("Parsing bib files")
     entries = parse_bib(args.bibs)
