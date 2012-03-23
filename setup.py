@@ -6,7 +6,7 @@ except:
 
 setup(
     name = "pyBib",
-    version = "0.1",
+    version = "0.2",
     scripts = [ 'scripts/pyBib.py' ],
     # May work with earlier version, but have not tried
     install_requires=['tempita >= 0.5'],
