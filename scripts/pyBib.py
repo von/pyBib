@@ -6,6 +6,7 @@ import datetime
 import ConfigParser
 import logging
 import re
+import string
 import sys
 
 from tempita import HTMLTemplate, Template, bunch
@@ -21,9 +22,8 @@ def authors_filter(s):
     if s is None:
         return None
     authors = AUTHOR_SPLIT_RE.split(s)
-    for index in range(len(authors)):
-        author = authors[index].strip()
-        authors[index] = author
+    # Clean up whitespace and remove null authors
+    authors = filter(lambda s: len(s) > 0, map(string.strip, authors))
     if len(authors) > 1:
         authors_string = ", ".join(authors[:-1]) + " and " + authors[len(authors)-1]
     else:
