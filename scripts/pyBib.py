@@ -82,6 +82,7 @@ def parse_bib(filenames, append_to=None):
         entry.key = section
         entry.setdefault("month", None)
         entry.setdefault("howpublished", None)
+        entry.setdefault("url", None)
         entry.datetime = get_entry_datetime(entry)
         bibs.append(entry)
     # Sort descending by datetime
