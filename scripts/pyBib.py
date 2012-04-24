@@ -43,7 +43,16 @@ def month_filter(s):
     """Given any reasonable month representation, return a nice string"""
     if s is None:
         return None
-    return datetime.datetime.strptime(s, "%b").strftime("%B")
+    dt = None
+    try:
+        # Full month name
+        dt = datetime.datetime.strptime(s, "%B")
+    except ValueError:
+        pass
+    if dt is None:
+        # Abbreviated month name
+        dt = datetime.datetime.strptime(s, "%b")
+    return dt.strftime("%B")
 
 ######################################################################
 
