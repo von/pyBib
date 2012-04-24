@@ -139,7 +139,12 @@ def main(argv=None):
     template = args.template_class(template_string)
 
     output.info("Parsing bib files")
-    entries = parse_bib(args.bibs)
+    try:
+        entries = parse_bib(args.bibs)
+    except Exception as e:
+        output.error("Error parsing bibliography files")
+        output.error(str(e))
+        return 1
 
     substitutions = {
         "entries" : entries,
@@ -148,7 +153,12 @@ def main(argv=None):
         "first_name_initial_filter" : first_name_initial_filter,
         "month_filter" : month_filter,
         }
-    print template.substitute(substitutions)
+    try:
+        print template.substitute(substitutions)
+    except Exception as e:
+        output.error("Error filling in template")
+        output.error(str(e))
+        return 1
     
     return(0)
 
