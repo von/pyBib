@@ -1,0 +1,8 @@
+
+{{# A simple template for testing. }}
+
+{{for entry in entries}}
+
+Title: {{ entry.title}}
+Authors: {{ entry.author }}
+{{endfor}}
