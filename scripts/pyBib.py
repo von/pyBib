@@ -9,50 +9,8 @@ import re
 import string
 import sys
 
-from tempita import HTMLTemplate, Template, bunch
-
-######################################################################
-#
-# Filter functions
-
-AUTHOR_SPLIT_RE = re.compile(",|\sand\s")
-
-def authors_filter(s):
-    """Given a list of authors, return a nice representation"""
-    if s is None:
-        return None
-    authors = AUTHOR_SPLIT_RE.split(s)
-    # Clean up whitespace and remove null authors
-    authors = filter(lambda s: len(s) > 0, map(string.strip, authors))
-    if len(authors) > 1:
-        authors_string = ", ".join(authors[:-1]) + " and " + authors[len(authors)-1]
-    else:
-        authors_string = authors[0]
-    return authors_string
-
-def first_name_initial_filter(s):
-    """Make first name an initial and return"""
-    parts = s.split()
-    if len(parts) == 0:
-        return s
-    first_name = parts[0]
-    parts[0] = first_name[0].upper() + "."
-    return " ".join(parts)
-
-def month_filter(s):
-    """Given any reasonable month representation, return a nice string"""
-    if s is None:
-        return None
-    dt = None
-    try:
-        # Full month name
-        dt = datetime.datetime.strptime(s, "%B")
-    except ValueError:
-        pass
-    if dt is None:
-        # Abbreviated month name
-        dt = datetime.datetime.strptime(s, "%b")
-    return dt.strftime("%B")
+import mako
+from mako.template import Template
 
 ######################################################################
 
@@ -78,15 +36,15 @@ def parse_bib(filenames, append_to=None):
     config.read(filenames)
     sections = config.sections()
     for section in sections:
-        entry = bunch(**dict(config.items(section)))
-        entry.key = section
+        entry = dict(config.items(section))
+        entry["key"] = section
         entry.setdefault("month", None)
         entry.setdefault("howpublished", None)
         entry.setdefault("url", None)
-        entry.datetime = get_entry_datetime(entry)
+        entry["datetime"] = get_entry_datetime(entry)
         bibs.append(entry)
     # Sort descending by datetime
-    bibs.sort(cmp=lambda a,b: cmp(b.datetime, a.datetime))
+    bibs.sort(cmp=lambda a,b: cmp(b["datetime"], a["datetime"]))
     return bibs
 
 def main(argv=None):
@@ -121,10 +79,6 @@ def main(argv=None):
                                  action="store_const", const=logging.WARNING,
                                  dest="output_level",
                                  help="run quietly")
-    parser.add_argument("-H", "--html",
-                        action='store_const', dest='template_class',
-                        const=HTMLTemplate, default=Template,
-                        help="Do HTML escaping")
     parser.add_argument("-t", "--template", required=True,
                         help="template file", metavar="FILE")
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
@@ -136,7 +90,7 @@ def main(argv=None):
     output.info("Reading template from {}".format(args.template))
     with open(args.template) as f:
         template_string = "".join(f.readlines())
-    template = args.template_class(template_string)
+    template = Template(template_string)
 
     output.info("Parsing bib files")
     try:
@@ -148,16 +102,14 @@ def main(argv=None):
 
     substitutions = {
         "entries" : entries,
-        # Filters
-        "authors_filter" : authors_filter,
-        "first_name_initial_filter" : first_name_initial_filter,
-        "month_filter" : month_filter,
         }
+    
     try:
-        print template.substitute(substitutions)
+        print template.render(**substitutions)
     except Exception as e:
         output.error("Error filling in template")
         output.error(str(e))
+        output.error(mako.exceptions.text_error_template().render())
         return 1
     
     return(0)

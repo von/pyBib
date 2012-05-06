@@ -6,13 +6,14 @@ except:
 
 setup(
     name = "pyBib",
-    version = "0.2",
+    version = "0.3",
+    packages = [ "pybib" ],
     scripts = [
         'scripts/pyBib.py',
         'scripts/pyBib-check-urls.py'
         ],
     install_requires=[
-        'tempita >= 0.5', # May work with earlier version
+        'mako >= 0.7.0', # May work with earlier version
         'requests >= 0.11.2',  # Might work with earlier version
         ],
 
