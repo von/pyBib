@@ -12,40 +12,7 @@ import sys
 import mako
 from mako.template import Template
 
-######################################################################
-
-def get_entry_datetime(entry):
-    """Return a datetime object for an entry."""
-    s = entry["month"] if entry["month"] else "Jan"
-    s += " " + entry["year"]
-    try:
-        d = datetime.datetime.strptime(s, "%b %Y")
-    except ValueError:
-        d = datetime.datetime.strptime(s, "%B %Y")
-    return d
-
-def parse_bib(filenames, append_to=None):
-    """Parse entries from given filenames
-
-    filenames can be a single string instead of a list."""
-    if append_to is not None:
-        bibs = append_to
-    else:
-        bibs = [] 
-    config = ConfigParser.SafeConfigParser()
-    config.read(filenames)
-    sections = config.sections()
-    for section in sections:
-        entry = dict(config.items(section))
-        entry["key"] = section
-        entry.setdefault("month", None)
-        entry.setdefault("howpublished", None)
-        entry.setdefault("url", None)
-        entry["datetime"] = get_entry_datetime(entry)
-        bibs.append(entry)
-    # Sort descending by datetime
-    bibs.sort(cmp=lambda a,b: cmp(b["datetime"], a["datetime"]))
-    return bibs
+from pybib import BibParser
 
 def main(argv=None):
     # Do argv default this way, as doing it in the functional
@@ -94,11 +61,18 @@ def main(argv=None):
 
     output.info("Parsing bib files")
     try:
-        entries = parse_bib(args.bibs)
+        bib_parser = BibParser()
+        entries = bib_parser.parse_bib(args.bibs)
     except Exception as e:
         output.error("Error parsing bibliography files")
         output.error(str(e))
         return 1
+
+    # DEBUG start
+    import pprint
+    printer = pprint.PrettyPrinter()
+    printer.pprint(entries)
+    # DEBUG end
 
     substitutions = {
         "entries" : entries,
