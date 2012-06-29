@@ -68,12 +68,6 @@ def main(argv=None):
         output.error(str(e))
         return 1
 
-    # DEBUG start
-    import pprint
-    printer = pprint.PrettyPrinter()
-    printer.pprint(entries)
-    # DEBUG end
-
     substitutions = {
         "entries" : entries,
         }
