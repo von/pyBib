@@ -10,9 +10,8 @@ class Bib(list):
         if entries is not None:
             self.extend(entries)
 
-    def sort_by_date(reverse=True):
+    def sort_by_date(self, reverse=True):
         """Sort entries by date in place
 
         If reverse == True, then will be newest to older."""
-        self.sort(cmp=lambda a,b: cmp(a["datetime"], b["datetime"]),
-                  reverse=reverse)
+        self.sort(key = lambda e: e.datetime(), reverse=reverse)

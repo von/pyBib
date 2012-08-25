@@ -22,8 +22,8 @@ class Entry(collections.defaultdict):
 
     def datetime(self):
         """Return datetime object representing publication date of entry"""
-        s = entry["month"] if entry["month"] else "Jan"
-        s += " " + entry["year"]
+        s = self["month"] if self["month"] else "Jan"
+        s += " " + self["year"]
         try:
             dt = datetime.datetime.strptime(s, "%b %Y")
         except ValueError:
