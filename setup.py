@@ -6,7 +6,7 @@ except:
 
 setup(
     name = "pyBib",
-    version = "0.5",
+    version = "0.6",
     packages = [ "pybib" ],
     scripts = [
         'scripts/pyBib.py',

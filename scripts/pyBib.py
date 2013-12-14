@@ -11,6 +11,7 @@ import sys
 
 import mako
 from mako.template import Template
+from mako.lookup import TemplateLookup
 
 from pybib import BibParser
 
@@ -48,6 +49,9 @@ def main(argv=None):
                                  help="run quietly")
     parser.add_argument("-t", "--template", required=True,
                         help="template file", metavar="FILE")
+    parser.add_argument("-T", "--template_path",
+                        action='append',
+                        help="search PATH for templates", metavar="PATH")
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
     parser.add_argument('bibs', metavar='args', type=str, nargs='+',
                         help='bib files to use')
@@ -55,9 +59,10 @@ def main(argv=None):
     output_handler.setLevel(args.output_level)
 
     output.info("Reading template from {}".format(args.template))
+    mylookup = TemplateLookup(directories=args.template_path)
     with open(args.template) as f:
         template_string = "".join(f.readlines())
-        template = Template(template_string)
+        template = Template(template_string, lookup=mylookup)
 
     output.info("Parsing bib files")
     try:
