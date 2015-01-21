@@ -45,7 +45,7 @@ def main(argv=None):
     entries = bib_parser.parse_bib(args.bibs)
     status = 0
     for entry in entries:
-        if entry.has_key("url"):
+        if "url" in entry.keys():
             url = entry["url"]
             if check_url(url):
                 if args.verbose:
