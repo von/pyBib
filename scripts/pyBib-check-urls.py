@@ -2,9 +2,6 @@
 """Check URLs in pyBib bibliography"""
 
 import argparse
-import ConfigParser
-import httplib
-import urlparse
 import sys
 
 import requests
