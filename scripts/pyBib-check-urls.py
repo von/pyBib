@@ -41,7 +41,7 @@ def main(argv=None):
                         action='store_const', dest='verbose',
                         const=True, default=False,
                         help="run verbosely")
-    parser.add_argument('bibs', metavar='args', type=str, nargs='+',
+    parser.add_argument('bibs', metavar='file', type=str, nargs='+',
                         help='bib files to use')
     args = parser.parse_args()
     bib_parser = BibParser()
