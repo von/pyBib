@@ -3,6 +3,7 @@
 
 import argparse
 import sys
+import urlparse
 
 import requests
 
@@ -34,6 +35,10 @@ def main(argv=None):
         # To have --help print defaults with trade-off it changes
         # formatting, use: ArgumentDefaultsHelpFormatter
     )
+    parser.add_argument("-H", "--host",
+                        dest="hostname", default=None,
+                        help="Specify hostname for URL if missing",
+                        metavar="HOSTNAME")
     parser.add_argument("-v", "--verbose",
                         action='store_const', dest='verbose',
                         const=True, default=False,
@@ -46,13 +51,24 @@ def main(argv=None):
     status = 0
     for entry in entries:
         if "url" in entry.keys():
-            url = entry["url"]
+            # Use list() here since returned tuple is immutable
+            urlparts = list(urlparse.urlparse(entry["url"]))
+            if urlparts[0] == '':
+                urlparts[0] = 'http'
+            if urlparts[1] == '':
+                if args.hostname:
+                    urlparts[1] = args.hostname
+                else:
+                    print "{}: URL has no hostname " \
+                        "and none given on commandline.".format(entry["key"])
+                    continue
+            url = urlparse.urlunparse(urlparts)
             if check_url(url):
                 if args.verbose:
                     print "{} ... GOOD".format(url)
-                else:
-                    print "{} ... BAD".format(url)
-                    status = 1
+            else:
+                print "{} ... BAD".format(url)
+                status = 1
     return(status)
 
 if __name__ == "__main__":
