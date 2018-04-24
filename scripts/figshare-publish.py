@@ -96,7 +96,7 @@ def main(argv=None):
     try:
         location = api.call_create_article(article)
     except restkit.errors.RequestFailed as ex:
-        print(str(ex))
+        print("Error creating article: " + str(ex))
         return(1)
     id = location.location.rsplit('/', 1)[-1]
     if args.debug:
@@ -105,14 +105,14 @@ def main(argv=None):
         try:
             location = api.call_upload_new_file(id, args.file)
         except restkit.errors.RequestFailed as ex:
-            print(str(ex))
+            print("Error uploading file: " + str(ex))
             return(1)
         if args.debug:
             print("{} uploaded".format(args.file))
     try:
         doi = api.call_reserve_doi(id)
     except restkit.errors.RequestFailed as ex:
-        print(str(ex))
+        print("Error reserving DOI: " + str(ex))
         return(1)
     print(doi)
     return(0)
