@@ -39,9 +39,9 @@ def make_parser():
                             dest="type", action="store_const", const="presentation",
                             help="Set type to 'presentation'")
     project_group = parser.add_mutually_exclusive_group()
-    project_group.add_argument("--ctsc",
-                               dest="project", action="store_const", const="ctsc",
-                               help="Set project to 'CTSC'")
+    project_group.add_argument("--trustedci",
+                               dest="project", action="store_const", const="trustedci",
+                               help="Set project to 'TrustedCI'")
     project_group.add_argument("--swip",
                                dest="project", action="store_const", const="swip",
                                help="Set project to 'SWIP'")
@@ -68,7 +68,7 @@ def make_article(args):
         ]
     }
     if args.project:
-        if args.project == "ctsc":
+        if args.project == "trustedci":
             article_fields["funding"] = "NSF 1547272"
             article_fields["tags"].append("trustedci")
         elif args.project == "swip":
