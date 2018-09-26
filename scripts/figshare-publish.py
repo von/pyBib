@@ -39,6 +39,9 @@ def make_parser():
                             dest="type", action="store_const", const="presentation",
                             help="Set type to 'presentation'")
     project_group = parser.add_mutually_exclusive_group()
+    project_group.add_argument("--rsoc",
+                               dest="project", action="store_const", const="rsoc",
+                               help="Set project to 'ResearchSOC'")
     project_group.add_argument("--trustedci",
                                dest="project", action="store_const", const="trustedci",
                                help="Set project to 'TrustedCI'")
@@ -74,6 +77,9 @@ def make_article(args):
         elif args.project == "swip":
             article_fields["funding"] = "NSF 1642070, 1642053, and 1642090"
             article_fields["tags"].append("swip")
+        elif args.project == "rsoc":
+            article_fields["funding"] = "NSF 1840034"
+            article_fields["tags"].append("researchsoc")
         else:
             print("Warning: Unrecognized project \"{}\"".format(args.project))
     if args.keyword:
