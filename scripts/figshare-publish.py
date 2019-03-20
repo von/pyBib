@@ -44,15 +44,15 @@ def make_parser():
     type_group.add_argument("--presentation",
                             dest="type", action="store_const", const="presentation",
                             help="Set type to 'presentation'")
-    project_group = parser.add_mutually_exclusive_group()
+    project_group = parser.add_argument_group()
     project_group.add_argument("--rsoc",
-                               dest="project", action="store_const", const="rsoc",
+                               dest="project", action="append_const", const="rsoc",
                                help="Set project to 'ResearchSOC'")
     project_group.add_argument("--trustedci",
-                               dest="project", action="store_const", const="trustedci",
+                               dest="project", action="append_const", const="trustedci",
                                help="Set project to 'TrustedCI'")
     project_group.add_argument("--swip",
-                               dest="project", action="store_const", const="swip",
+                               dest="project", action="append_const", const="swip",
                                help="Set project to 'SWIP'")
     parser.add_argument("--file", metavar="filename", type=str, help="Upload file")
     parser.add_argument("--keyword", metavar="keyword", type=str, help="Add keyword")
@@ -67,7 +67,7 @@ def make_article(args):
         "title" : args.title,
         "description" : args.description,
         "defined_type" : args.type,
-        "funding" : "None",  # Required field
+        "funding" : [ ],  # Will convert to string later
         "license" : 1,  # CC BY 4.0
         # 'tags' is an alias for 'keywords'
         "tags" : [ ],
@@ -76,18 +76,24 @@ def make_article(args):
             77 # Applied Computer Science
         ]
     }
-    if args.project:
-        if args.project == "trustedci":
-            article_fields["funding"] = "NSF 1547272"
+    for project in args.project:
+        if project == "trustedci":
+            article_fields["funding"].append("NSF 1547272")
             article_fields["tags"].append("trustedci")
-        elif args.project == "swip":
-            article_fields["funding"] = "NSF 1642070, 1642053, and 1642090"
+        elif project == "swip":
+            article_fields["funding"].extend(
+                ["NSF 1642070", "NSF 1642053", "NSF 1642090"])
             article_fields["tags"].append("swip")
-        elif args.project == "rsoc":
-            article_fields["funding"] = "NSF 1840034"
+        elif project == "rsoc":
+            article_fields["funding"].append("NSF 1840034")
             article_fields["tags"].append("researchsoc")
         else:
-            print("Warning: Unrecognized project \"{}\"".format(args.project))
+            print("Warning: Unrecognized project \"{}\"".format(project))
+    if len(article_fields["funding"]) > 0:
+        article_fields["funding"] = ", ".join(article_fields["funding"])
+    else:
+        # Required field, so must have something
+        article_fields["funding"] = "None"
     if args.keyword:
         article_fields["tags"].extend(args.keyword)
     # A keyword is required for publishing
