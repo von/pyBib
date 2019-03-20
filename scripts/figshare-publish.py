@@ -7,8 +7,6 @@
 #
 #       [default]
 #       token = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-#
-# TODO: Reserve DOI and return it.
 
 from __future__ import print_function
 
