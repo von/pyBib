@@ -1,5 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Uses pigshare https://pypi.org/project/pigshare/
+# Requires ~/.pigshare.conf with a OAuth2 token.
+#   Get "Personal Token" from https://figshare.com/account/applications
+#   Put into ~/.pigshare.conf, which shoud look like:
+#
+#       [default]
+#       token = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#
 # TODO: Reserve DOI and return it.
 
 from __future__ import print_function
@@ -101,6 +109,10 @@ def main(argv=None):
     article = make_article(args)
     try:
         location = api.call_create_article(article)
+    except restkit.errors.Unauthorized as ex:
+        # TODO: Get message from ex object
+        print("Authorization to publish failed: " + str(ex))
+        return(1)
     except restkit.errors.RequestFailed as ex:
         print("Error creating article: " + str(ex))
         return(1)
