@@ -6,7 +6,7 @@ class BibWriter(object):
     """Write a Bib object out to a file object"""
 
     def write(self, bib, fileobject):
-        """Write the given Bib instance to the giben fileobject"""
+        """Write the given Bib instance to the given fileobject"""
         if bib is None:
             return
         parser = RawConfigParser()
