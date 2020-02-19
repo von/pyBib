@@ -79,7 +79,7 @@ def make_article(args):
     if args.project:
         for project in args.project:
             if project == "trustedci":
-                article_fields["funding"].append("NSF 1547272")
+                article_fields["funding"].append("NSF 1920430")
                 article_fields["tags"].append("trustedci")
             elif project == "swip":
                 article_fields["funding"].extend(
