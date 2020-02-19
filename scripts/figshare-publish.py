@@ -76,19 +76,20 @@ def make_article(args):
             77 # Applied Computer Science
         ]
     }
-    for project in args.project:
-        if project == "trustedci":
-            article_fields["funding"].append("NSF 1547272")
-            article_fields["tags"].append("trustedci")
-        elif project == "swip":
-            article_fields["funding"].extend(
-                ["NSF 1642070", "NSF 1642053", "NSF 1642090"])
-            article_fields["tags"].append("swip")
-        elif project == "rsoc":
-            article_fields["funding"].append("NSF 1840034")
-            article_fields["tags"].append("researchsoc")
-        else:
-            print("Warning: Unrecognized project \"{}\"".format(project))
+    if args.project:
+        for project in args.project:
+            if project == "trustedci":
+                article_fields["funding"].append("NSF 1547272")
+                article_fields["tags"].append("trustedci")
+            elif project == "swip":
+                article_fields["funding"].extend(
+                    ["NSF 1642070", "NSF 1642053", "NSF 1642090"])
+                article_fields["tags"].append("swip")
+            elif project == "rsoc":
+                article_fields["funding"].append("NSF 1840034")
+                article_fields["tags"].append("researchsoc")
+            else:
+                print("Warning: Unrecognized project \"{}\"".format(project))
     if len(article_fields["funding"]) > 0:
         article_fields["funding"] = ", ".join(article_fields["funding"])
     else:
