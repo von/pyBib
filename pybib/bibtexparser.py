@@ -29,10 +29,10 @@ def escape_chars(s):
 class BibTexParser(object):
 
     def parse_bib(self, filenames, append_to=None):
-	"""Parse bibtexfiles and create Bib instance.
+        """Parse bibtexfiles and create Bib instance.
 
-	If append_to is not None, it should be an existing Bib instance
-	that will be appended to."""
+        If append_to is not None, it should be an existing Bib instance
+        that will be appended to."""
         bib = append_to if append_to else Bib()
         entry = None
         for file in filenames:
