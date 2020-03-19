@@ -59,10 +59,15 @@ def main(argv=None):
     output_handler.setLevel(args.output_level)
 
     output.info("Reading template from {}".format(args.template))
-    mylookup = TemplateLookup(directories=args.template_path)
+    mylookup = TemplateLookup(directories=args.template_path,
+                              input_encoding='utf-8',
+                              output_encoding='utf-8')
     with open(args.template) as f:
         template_string = "".join(f.readlines())
-        template = Template(template_string, lookup=mylookup)
+        template = Template(template_string,
+                            lookup=mylookup,
+                            input_encoding='utf-8',
+                            output_encoding='utf-8')
 
     output.info("Parsing bib files")
     try:
