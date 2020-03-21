@@ -66,6 +66,7 @@ def main(argv=None):
         template_string = "".join(f.readlines())
         template = Template(template_string,
                             lookup=mylookup,
+                            default_filters=['decode.utf8'],
                             input_encoding='utf-8',
                             output_encoding='utf-8')
 
