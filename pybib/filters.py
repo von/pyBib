@@ -12,7 +12,7 @@ def authors_filter(s):
         return None
     authors = AUTHOR_SPLIT_RE.split(s)
     # Clean up whitespace and remove null authors
-    authors = [s.strip() for s in authors]
+    authors = [s.strip() for s in authors if len(s)>0]
     if len(authors) > 1:
         authors_string = ", ".join(authors[:-1]) + " and " + authors[len(authors)-1]
     else:
