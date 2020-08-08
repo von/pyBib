@@ -3,7 +3,7 @@
 
 import argparse
 import sys
-import urlparse
+import urllib.parse
 
 import requests
 
@@ -50,24 +50,24 @@ def main(argv=None):
     entries = bib_parser.parse_bib(args.bibs)
     status = 0
     for entry in entries:
-        if "url" in entry.keys():
+        if "url" in list(entry.keys()):
             # Use list() here since returned tuple is immutable
-            urlparts = list(urlparse.urlparse(entry["url"]))
+            urlparts = list(urllib.parse.urlparse(entry["url"]))
             if urlparts[0] == '':
                 urlparts[0] = 'http'
             if urlparts[1] == '':
                 if args.hostname:
                     urlparts[1] = args.hostname
                 else:
-                    print "{}: URL has no hostname " \
-                        "and none given on commandline.".format(entry["key"])
+                    print("{}: URL has no hostname " \
+                        "and none given on commandline.".format(entry["key"]))
                     continue
-            url = urlparse.urlunparse(urlparts)
+            url = urllib.parse.urlunparse(urlparts)
             if check_url(url):
                 if args.verbose:
-                    print "{} ... GOOD".format(url)
+                    print("{} ... GOOD".format(url))
             else:
-                print "{} ... BAD".format(url)
+                print("{} ... BAD".format(url))
                 status = 1
     return(status)
 

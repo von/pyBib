@@ -1,6 +1,6 @@
 """BibWriter.py: Write out a Bibliography"""
 
-from ConfigParser import RawConfigParser
+from configparser import RawConfigParser
 
 class BibWriter(object):
     """Write a Bib object out to a file object"""
@@ -13,6 +13,6 @@ class BibWriter(object):
         for entry in bib:
             key = entry.key
             parser.add_section(key)
-            for item,value in entry.items():
+            for item,value in list(entry.items()):
                 parser.set(key, item, value)
         parser.write(fileobject)

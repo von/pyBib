@@ -1,9 +1,9 @@
 """BibParser: Parse a bibliography from a conf file"""
 
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 
-from bib import Bib
-from entry import Entry
+from .bib import Bib
+from .entry import Entry
 
 class BibParser(object):
 
@@ -17,7 +17,8 @@ class BibParser(object):
         If append_to is not None, it should be an existing Bib instance
         that will be appended to."""
         bib = append_to if append_to else Bib()
-        config = SafeConfigParser()
+        # Strict=False is pre-3.2 behavior and allows for duplicate keys
+        config = SafeConfigParser(strict=False)
         config.read(filenames)
         sections = config.sections()
         for section in sections:

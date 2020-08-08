@@ -2,8 +2,8 @@
 
 import re
 
-from bib import Bib
-from entry import Entry
+from .bib import Bib
+from .entry import Entry
 
 EMPTY_STRING_RE = re.compile("^\s*$")
 ENTRY_START_RE = re.compile("@\w+[{(](\S+),")

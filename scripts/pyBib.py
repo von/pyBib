@@ -3,7 +3,7 @@
 
 import argparse
 import datetime
-import ConfigParser
+import configparser
 import logging
 import re
 import string
@@ -84,7 +84,9 @@ def main(argv=None):
     }
 
     try:
-        print template.render(**substitutions)
+        # Mako doesn't seem to be rendering into utf-8
+        # hance decode() here
+        print(template.render(**substitutions).decode())
     except Exception as e:
         output.error("Error filling in template")
         output.error(str(e))
