@@ -15,7 +15,6 @@ setup(
         ],
     install_requires=[
         'mako >= 0.7.0', # May work with earlier version
-        'pigshare == 0.5.0', # My modified version of 0.5.0 is needed
         'requests >= 0.11.2',  # Might work with earlier version
         ],
 

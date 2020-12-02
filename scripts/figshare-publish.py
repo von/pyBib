@@ -1,22 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Uses pigshare https://pypi.org/project/pigshare/
-# Requires ~/.pigshare.conf with a OAuth2 token.
+# Requires ~/.figshare.conf with a Figshare Personal Token.
 #   Get "Personal Token" from https://figshare.com/account/applications
-#   Put into ~/.pigshare.conf, which shoud look like:
+#       https://help.figshare.com/article/how-to-get-a-personal-token
+#   Put into ~/.figshare.conf, which shoud look like:
 #
 #       [default]
 #       token = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-from __future__ import print_function
 
 import argparse
+import configparser
+import os.path
 import sys
 
-from pigshare.api import figshare_api
-from pigshare.models import ArticleCreate
-from pigshare.pigshare import PigshareConfig
-import restkit
+from pybib import Figshare
 
 
 def make_parser():
@@ -62,7 +60,7 @@ def make_parser():
 
 
 def make_article(args):
-    """Return ArticleCreate object."""
+    """Return an article as a dictionary."""
     article_fields = {
         "title" : args.title,
         "description" : args.description,
@@ -100,42 +98,43 @@ def make_article(args):
     # A keyword is required for publishing
     if len(article_fields["tags"]) == 0:
         article_fields["tags"].append("iucacr")
-    article = ArticleCreate()
-    article.update(article_fields)
-    return article
+    return article_fields
 
 
 def main(argv=None):
     parser = make_parser()
     args = parser.parse_args(argv if argv else sys.argv[1:])
 
-    config = PigshareConfig()
-    api = figshare_api(token=config.figshare_token)
+    config = configparser.ConfigParser()
+    config.read([os.path.expanduser('~/.figshare.conf')])
+    api = Figshare(config.get("default", "token"))
     article = make_article(args)
     try:
-        location = api.call_create_article(article)
-    except restkit.errors.Unauthorized as ex:
-        # TODO: Get message from ex object
-        print("Authorization to publish failed: " + str(ex))
-        return(1)
-    except restkit.errors.RequestFailed as ex:
+        location = api.create_article(article)
+    except Exception as ex:
         print("Error creating article: " + str(ex))
+        if args.debug:
+            raise(ex)
         return(1)
-    id = location.location.rsplit('/', 1)[-1]
+    id = location.rsplit('/', 1)[-1]
     if args.debug:
         print("Article {} created".format(id))
     if args.file:
         try:
-            location = api.call_upload_new_file(id, args.file)
-        except restkit.errors.RequestFailed as ex:
+            location = api.upload_new_file(id, args.file)
+        except Exception as ex:
             print("Error uploading file: " + str(ex))
+            if args.debug:
+                raise(ex)
             return(1)
         if args.debug:
             print("{} uploaded".format(args.file))
     try:
-        doi = api.call_reserve_doi(id)
-    except restkit.errors.RequestFailed as ex:
+        doi = api.reserve_doi(id)
+    except Exception as ex:
         print("Error reserving DOI: " + str(ex))
+        if args.debug:
+            raise(ex)
         return(1)
     print(doi)
     return(0)
